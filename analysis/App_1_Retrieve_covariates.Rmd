@@ -28,6 +28,7 @@ All of the analyses require the [R software](https://cran.r-project.org/) (v3.4.
 ```{r load_pkgs, message = FALSE, warning = FALSE}
 ## load libraries
 library("readr")
+
 library("here")
 
 ## set data dir
@@ -48,7 +49,7 @@ age_min <- 3
 age_max <- 8
 
 ## time lags (years) for covariates
-flow_lag <- 1
+flow_lag <- 0 #change lag to zero so that flow data aligns with fry stage
 marine_lag <- 2
 hrel_lag <- 2
 
@@ -67,14 +68,14 @@ Our analysis investigates 4 covariates as possible drivers of the population's i
 
 ## River discharge
 
-We begin by getting the daily flow data from the US Geological Service [National Water Information System](http://waterdata.usgs.gov/nwis). We will use the direct link to the gage data from the Skagit River near Mount Vernon, WA (#12178000), beginning with the first year of fish data.
+We begin by getting the daily flow data from the US Geological Service [National Water Information System](http://waterdata.usgs.gov/nwis). We will use the direct link to the gage data from the Skagit River near Mount Vernon, WA (#12178000), beginning with the first year of fish data. #this gauge is for Newhalem not Mount Vernon??
 
 ```{r get_flow_url}
 ## flow gage ID
-flow_site <- 12178000
+flow_site <- 12181000
 ## get URL for flow data from USGS
 flow_url <- paste0("https://waterdata.usgs.gov/nwis/dv",
-                   "?cb_00060=on",
+                   "?cb_00060=on", #This is param code 00060 for daily mean stream flow
                    "&format=rdb",
                    "&site_no=",flow_site,
                    "&begin_date=",yr_frst,"-01-01",
@@ -148,9 +149,12 @@ colnames(dat_flow_wtr)[2] <- "flow_wtr"
 
 Retrieving the minimum flow juveniles would experience during their first summer (June through September) is straightforward.
 
+### This is now Spring/Summer Maximum from May through July
+There is now no time lag to align with spawn and emergence year
+
 ```{r sum_flow, cache=TRUE}
 ## summer flows in year t
-flow_sum <- subset(dat_flow, (month>=6 & month<=9)
+flow_sum <- subset(dat_flow, (month>=5 & month<=7)
                    & year >= yr_frst+flow_lag
                    & year <= yr_last-age_min+n_fore+flow_lag)
 ## change year index to brood year

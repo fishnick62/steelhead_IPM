@@ -34,7 +34,7 @@ library("coda")
 library("gsl")
 
 ## set default caption delimter
-fig_cap <- captioner(suffix = ".")
+fig_cap <- captioner(infix = ".") # I changed suffix to infix because it was producing an error
 
 ## set directory locations
 datadir <- here("data")
